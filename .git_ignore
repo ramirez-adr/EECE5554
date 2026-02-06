@@ -1,0 +1,13 @@
+# ROS / colcon
+build/
+install/
+log/
+
+# python
+
+__pycache__/
+*.pyc
+.venv/
+
+# system
+.DS_Store

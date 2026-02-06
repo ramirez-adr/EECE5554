@@ -1,0 +1,6 @@
+{
+  "package_name": "gps_driver_interfaces",
+  "non_idl_tuples": [
+    "/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/src/gps_driver_interfaces:msg/GpsMsg.msg"
+  ]
+}

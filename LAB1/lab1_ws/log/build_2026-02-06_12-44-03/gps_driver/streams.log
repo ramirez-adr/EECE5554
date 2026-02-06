@@ -1,0 +1,37 @@
+[0.405s] Invoking command in '/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/src/gps_driver': AMENT_PREFIX_PATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces:${CMAKE_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com LD_LIBRARY_PATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages:/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/gps_driver build --build-base /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build install --record /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/install.log --single-version-externally-managed install_data
+[0.527s] running egg_info
+[0.528s] creating ../../build/gps_driver/gps_driver.egg-info
+[0.535s] writing ../../build/gps_driver/gps_driver.egg-info/PKG-INFO
+[0.535s] writing dependency_links to ../../build/gps_driver/gps_driver.egg-info/dependency_links.txt
+[0.535s] writing entry points to ../../build/gps_driver/gps_driver.egg-info/entry_points.txt
+[0.536s] writing requirements to ../../build/gps_driver/gps_driver.egg-info/requires.txt
+[0.536s] writing top-level names to ../../build/gps_driver/gps_driver.egg-info/top_level.txt
+[0.536s] writing manifest file '../../build/gps_driver/gps_driver.egg-info/SOURCES.txt'
+[0.551s] reading manifest file '../../build/gps_driver/gps_driver.egg-info/SOURCES.txt'
+[0.552s] writing manifest file '../../build/gps_driver/gps_driver.egg-info/SOURCES.txt'
+[0.552s] running build
+[0.552s] running build_py
+[0.552s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build
+[0.552s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build/lib
+[0.552s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build/lib/gps_driver
+[0.552s] copying gps_driver/gpgga_to_utm_node.py -> /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build/lib/gps_driver
+[0.553s] copying gps_driver/__init__.py -> /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build/lib/gps_driver
+[0.553s] running install
+[0.556s] running install_lib
+[0.564s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages/gps_driver
+[0.565s] copying /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build/lib/gps_driver/gpgga_to_utm_node.py -> /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages/gps_driver
+[0.565s] copying /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build/lib/gps_driver/__init__.py -> /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages/gps_driver
+[0.565s] byte-compiling /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages/gps_driver/gpgga_to_utm_node.py to gpgga_to_utm_node.cpython-312.pyc
+[0.566s] byte-compiling /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages/gps_driver/__init__.py to __init__.cpython-312.pyc
+[0.566s] running install_data
+[0.566s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/share/ament_index
+[0.566s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/share/ament_index/resource_index
+[0.566s] creating /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/share/ament_index/resource_index/packages
+[0.566s] copying resource/gps_driver -> /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/share/ament_index/resource_index/packages
+[0.566s] copying package.xml -> /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/share/gps_driver
+[0.566s] running install_egg_info
+[0.575s] Copying ../../build/gps_driver/gps_driver.egg-info to /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages/gps_driver-0.0.0-py3.12.egg-info
+[0.578s] running install_scripts
+[0.639s] Installing gpgga_to_utm script to /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/gps_driver
+[0.639s] writing list of installed files to '/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/install.log'
+[0.656s] Invoked command in '/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/src/gps_driver' returned '0': AMENT_PREFIX_PATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces:${CMAKE_PREFIX_PATH} DEBUGINFOD_URLS=https://debuginfod.ubuntu.com LD_LIBRARY_PATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver/lib/python3.12/site-packages:/home/parallels/Desktop/EECE5554/LAB1/lab1_ws/install/gps_driver_interfaces/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/gps_driver build --build-base /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/build install --record /home/parallels/Desktop/EECE5554/LAB1/lab1_ws/build/gps_driver/install.log --single-version-externally-managed install_data
