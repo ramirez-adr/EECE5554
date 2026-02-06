@@ -1,2 +1,0 @@
-[console_scripts]
-gpgga_to_utm = gps_driver.gpgga_to_utm_node:main

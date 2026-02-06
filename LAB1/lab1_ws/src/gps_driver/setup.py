@@ -24,7 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'gpgga_to_utm = gps_driver.gpgga_to_utm_node:main'
+            'gpgga_to_utm = gps_driver.gpgga_to_utm_node:main',
+            'driver = gps_driver.driver:main'
         ],
     },
 )
