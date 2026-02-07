@@ -6,9 +6,9 @@ from rclpy.serialization import deserialize_message
 from rosidl_runtime_py.utilities import get_message
 
 
-BAG_PATH = "straight_line/straight_line_0.mcap"
+BAG_PATH = "LAB1/src/data/straight_line2/straight_line2_0.mcap"
 TOPIC = "/gps"
-OUT_CSV = "straight_line_data_0_gps.csv"
+OUT_CSV = "straight_line_data_1_gps.csv"
 
 
 def main():
