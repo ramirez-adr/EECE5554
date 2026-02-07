@@ -16,3 +16,8 @@ __pycache__/
 # misc
 .DS_Store
 *.swp
+
+
+# data + virtual env
+occluded_data/
+.venv/
