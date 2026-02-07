@@ -20,4 +20,6 @@ __pycache__/
 
 # data + virtual env
 occluded_data/
+open_data/
+straight_line/
 .venv/
