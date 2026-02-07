@@ -143,7 +143,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', '-p', required=True, help='Serial port, e.g. /dev/ttyUSB2 or /dev/pts/6')
     parser.add_argument('--baud', '-b', type=int, default=4800)
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
+
 
     rclpy.init()
     node = GPSDriver(port=args.port, baud=args.baud)
