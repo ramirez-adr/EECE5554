@@ -1,163 +1,150 @@
 #!/usr/bin/env python3
-import math
+import argparse
+import serial
 import rclpy
 from rclpy.node import Node
-
-import serial
+from std_msgs.msg import Header
+from gps_driver.msg import gps_msg
 import utm
 
-from std_msgs.msg import Header
-from gps_driver_interfaces.msg import gps_msg  # <-- your custom message
-
-
-def nmea_dm_to_deg(dm: str, hemi: str) -> float:
+def nmea_to_decimal(dm: str, hemi: str) -> float:
     """
-    Convert NMEA ddmm.mmmm (lat) or dddmm.mmmm (lon) to decimal degrees.
-    hemi: N/S/E/W
+    NMEA lat/lon format:
+      lat:  DDMM.MMMM
+      lon: DDDMM.MMMM
     """
-    if not dm or '.' not in dm:
-        raise ValueError(f"Bad NMEA field: {dm}")
+    if dm == '' or hemi == '':
+        raise ValueError("Empty lat/lon field")
 
-    dot = dm.find('.')
-    head_len = dot - 2
-    deg_str = dm[:head_len]
-    min_str = dm[head_len:]
+    raw = float(dm)
+    deg = int(raw // 100)
+    minutes = raw - deg * 100
+    dec = deg + minutes / 60.0
 
-    deg = float(deg_str)
-    minutes = float(min_str)
-    dec = deg + (minutes / 60.0)
-
-    if hemi in ('S', 'W'):
+    if hemi in ['S', 'W']:
         dec *= -1.0
     return dec
 
-
-def parse_utc_to_stamp(utc_str: str):
+def parse_gpgga(sentence: str):
     """
-    GPGGA UTC format: hhmmss.sss (may be hhmmss or hhmmss.ss)
-    Convert to (sec, nanosec) since start of day (NOT system time).
+    Example:
+    $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+    """
+    if not sentence.startswith("$GPGGA") and not sentence.startswith("$GNGGA"):
+        return None
+
+    # strip checksum part
+    body = sentence.split('*')[0]
+    fields = body.split(',')
+
+    # indices per NMEA GGA
+    utc = fields[1]
+    lat_dm, lat_hemi = fields[2], fields[3]
+    lon_dm, lon_hemi = fields[4], fields[5]
+    fix_quality = fields[6]
+    hdop = fields[8]
+    alt = fields[9]
+
+    # require a fix
+    if fix_quality == '' or fix_quality == '0':
+        return None
+
+    lat = nmea_to_decimal(lat_dm, lat_hemi)
+    lon = nmea_to_decimal(lon_dm, lon_hemi)
+    altitude = float(alt) if alt != '' else float('nan')
+    hdop_v = float(hdop) if hdop != '' else float('nan')
+
+    # UTM conversion
+    easting, northing, zone_num, zone_letter = utm.from_latlon(lat, lon)
+
+    return {
+        "utc": utc,
+        "lat": lat,
+        "lon": lon,
+        "alt": altitude,
+        "hdop": hdop_v,
+        "easting": float(easting),
+        "northing": float(northing),
+        "zone": str(zone_num),
+        "letter": str(zone_letter),
+    }
+
+def gpgga_utc_to_ros_time(utc_str: str):
+    """
+    Convert HHMMSS(.ss) UTC to a ROS2 builtin time.
+    Lab wants you to use GPGGA time, not system time. :contentReference[oaicite:3]{index=3}
+    We don’t know the date here, so we encode “seconds since midnight” into stamp.
     """
     if not utc_str:
-        raise ValueError("Missing UTC time")
+        return (0, 0)
 
-    # Ensure we have a float-like string
-    t = float(utc_str)
-    hh = int(t // 10000)
-    mm = int((t - hh * 10000) // 100)
-    ss = t - hh * 10000 - mm * 100  # includes fractional seconds
+    # HHMMSS.SS
+    hh = int(utc_str[0:2])
+    mm = int(utc_str[2:4])
+    ss = float(utc_str[4:])
 
-    sec_of_day = hh * 3600 + mm * 60 + int(ss)
-    frac = ss - int(ss)
-    nanosec = int(frac * 1e9)
+    total = hh * 3600 + mm * 60 + ss
+    sec = int(total)
+    nsec = int((total - sec) * 1e9)
+    return (sec, nsec)
 
-    return sec_of_day, nanosec, t  # also return UTC as float
+class GPSDriver(Node):
+    def __init__(self, port: str, baud: int = 4800):
+        super().__init__('gps_driver')
+        self.publisher_ = self.create_publisher(gps_msg, '/gps', 10)
 
+        self.ser = serial.Serial(port, baudrate=baud, timeout=1.0)
+        self.get_logger().info(f"Reading GPS on {port} @ {baud} baud")
 
-def parse_gpgga(line: str):
-    """
-    Parse $GPGGA and return:
-    lat_deg, lon_deg, altitude_m, hdop, utc_float, zone_num, zone_letter, stamp_sec, stamp_nsec
-    """
-    line = line.strip()
-    if not line.startswith("$GPGGA"):
-        raise ValueError("Not GPGGA")
+        # read loop timer
+        self.timer = self.create_timer(0.05, self.read_once)
 
-    core = line.split('*')[0]
-    parts = core.split(',')
-
-    # Indices (standard GPGGA):
-    # 1 UTC, 2 lat, 3 N/S, 4 lon, 5 E/W, 6 fix, 7 sats, 8 hdop, 9 alt, 10 alt_units ...
-    if len(parts) < 11:
-        raise ValueError("Too few fields in GPGGA")
-
-    utc_str = parts[1]
-    lat_dm, lat_hemi = parts[2], parts[3]
-    lon_dm, lon_hemi = parts[4], parts[5]
-    fix_q = parts[6]
-    hdop_str = parts[8]
-    alt_str = parts[9]
-
-    if not lat_dm or not lon_dm or not fix_q:
-        raise ValueError("Missing lat/lon/fix")
-
-    lat_deg = nmea_dm_to_deg(lat_dm, lat_hemi)
-    lon_deg = nmea_dm_to_deg(lon_dm, lon_hemi)
-
-    fix_q_int = int(fix_q)
-    if fix_q_int == 0:
-        raise ValueError("No fix (fix quality 0)")
-
-    altitude = float(alt_str) if alt_str else float("nan")
-    hdop = float(hdop_str) if hdop_str else float("nan")
-
-    stamp_sec, stamp_nsec, utc_float = parse_utc_to_stamp(utc_str)
-
-    easting, northing, zone_num, zone_letter = utm.from_latlon(lat_deg, lon_deg)
-
-    return (
-        lat_deg, lon_deg, altitude, hdop,
-        easting, northing, zone_num, zone_letter,
-        utc_float, stamp_sec, stamp_nsec
-    )
-
-
-class GpsDriverNode(Node):
-    def __init__(self):
-        super().__init__("gps_driver")
-
-        self.declare_parameter("port", "/dev/pts/6")
-        self.declare_parameter("baud", 4800)
-
-        port = self.get_parameter("port").value
-        baud = self.get_parameter("baud").value
-
-        self.get_logger().info(f"Opening serial port {port} @ {baud}...")
-        self.ser = serial.Serial(port, baudrate=baud, timeout=1)
-
-        # Publish custom msg on /gps
-        self.pub = self.create_publisher(gps_msg, "/gps", 10)
-
-        self.timer = self.create_timer(0.05, self.read_loop)
-
-    def read_loop(self):
+    def read_once(self):
         try:
-            raw = self.ser.readline().decode(errors="ignore").strip()
-            if not raw:
-                return
-            if not raw.startswith("$GPGGA"):
+            line = self.ser.readline().decode('ascii', errors='ignore').strip()
+            if not line:
                 return
 
-            (lat, lon, alt, hdop,
-             easting, northing, zone, letter,
-             utc, stamp_sec, stamp_nsec) = parse_gpgga(raw)
+            parsed = parse_gpgga(line)
+            if parsed is None:
+                return
 
             msg = gps_msg()
 
-            # Header: timestamp from GPGGA time + constant frame_id
-            msg.Header = Header()
-            msg.Header.stamp.sec = int(stamp_sec)
-            msg.Header.stamp.nanosec = int(stamp_nsec)
-            msg.Header.frame_id = "GPS1_Frame"  # required constant :contentReference[oaicite:5]{index=5}
+            # Header
+            hdr = Header()
+            hdr.frame_id = "GPS1_Frame"  # required constant frame_id :contentReference[oaicite:4]{index=4}
 
-            msg.Latitude = float(lat)
-            msg.Longitude = float(lon)
-            msg.Altitude = float(alt)
-            msg.HDOP = float(hdop)
-            msg.UTM_easting = float(easting)
-            msg.UTM_northing = float(northing)
-            msg.UTC = float(utc)
-            msg.Zone = int(zone)
-            msg.Letter = str(letter)
+            sec, nsec = gpgga_utc_to_ros_time(parsed["utc"])
+            hdr.stamp.sec = sec
+            hdr.stamp.nanosec = nsec
 
-            self.pub.publish(msg)
+            msg.Header = hdr
+
+            # Fields
+            msg.Latitude = parsed["lat"]
+            msg.Longitude = parsed["lon"]
+            msg.Altitude = parsed["alt"]
+            msg.HDOP = parsed["hdop"]
+            msg.UTM_easting = parsed["easting"]
+            msg.UTM_northing = parsed["northing"]
+            msg.UTC = parsed["utc"]
+            msg.Zone = parsed["zone"]
+            msg.Letter = parsed["letter"]
+
+            self.publisher_.publish(msg)
 
         except Exception as e:
             self.get_logger().warn(f"Read/parse error: {e}")
 
-
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', '-p', required=True, help='Serial port, e.g. /dev/ttyUSB2 or /dev/pts/6')
+    parser.add_argument('--baud', '-b', type=int, default=4800)
+    args = parser.parse_args()
+
     rclpy.init()
-    node = GpsDriverNode()
+    node = GPSDriver(port=args.port, baud=args.baud)
     try:
         rclpy.spin(node)
     finally:
@@ -168,6 +155,5 @@ def main():
         node.destroy_node()
         rclpy.shutdown()
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
