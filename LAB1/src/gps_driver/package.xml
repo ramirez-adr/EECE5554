@@ -4,29 +4,19 @@
   <name>gps_driver</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="ramirez.adr@northeastern.edu">parallels</maintainer>
+  <maintainer email="ramirez.adr@northeastern.edu">adrian</maintainer>
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
   <depend>std_msgs</depend>
-
-  <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_depend>ament_python</buildtool_depend>
-
-  <build_depend>rosidl_default_generators</build_depend>
-  <exec_depend>rosidl_default_runtime</exec_depend>
-
-
+  <depend>gps_driver_msgs</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
-
-  <member_of_group>rosidl_interface_packages</member_of_group>
-
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>

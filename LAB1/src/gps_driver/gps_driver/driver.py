@@ -4,7 +4,7 @@ import serial
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Header
-from gps_driver.msg import GpsMsg
+from gps_driver_msgs.msg import GpsMsg
 import utm
 
 def nmea_to_decimal(dm: str, hemi: str) -> float:
@@ -130,10 +130,10 @@ class GPSDriver(Node):
             msg.zone = parsed["zone"]
             msg.letter = parsed["letter"]
 
+            
 
-  
 
-        
+
             self.publisher_.publish(msg)
 
         except Exception as e:
