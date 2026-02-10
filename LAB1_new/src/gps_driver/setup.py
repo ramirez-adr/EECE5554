@@ -10,6 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/gps_driver/launch', ['launch/launch.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,7 +25,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'gps_driver_node = gps_driver.driver:main',
+            'driver = gps_driver.driver:main',
         ],
     },
 )

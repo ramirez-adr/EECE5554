@@ -4,7 +4,7 @@ import serial
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Header
-from gps_driver_msgs.msg import gps_msg
+from gps_driver_msgs.msg import GpsMsg
 import utm
 
 def nmea_to_decimal(dm: str, hemi: str) -> float:
@@ -91,7 +91,7 @@ def gpgga_utc_to_ros_time(utc_str: str):
 class GPSDriver(Node):
     def __init__(self, port: str, baud: int = 4800):
         super().__init__('gps_driver')
-        self.publisher_ = self.create_publisher(gps_msg, '/gps', 10)
+        self.publisher_ = self.create_publisher(GpsMsg, '/gps', 10)
 
         self.ser = serial.Serial(port, baudrate=baud, timeout=1.0)
         self.get_logger().info(f"Reading GPS on {port} @ {baud} baud")
@@ -109,7 +109,7 @@ class GPSDriver(Node):
             if parsed is None:
                 return
 
-            msg = gps_msg()
+            msg = GpsMsg()
 
             # Header
             hdr = Header()
@@ -120,15 +120,17 @@ class GPSDriver(Node):
             hdr.stamp.nanosec = nsec
 
             msg.header = hdr
-            msg.Latitude = parsed["lat"]
-            msg.Longitude = parsed["lon"]
-            msg.Altitude = parsed["alt"]
-            msg.HDOP = parsed["hdop"]
-            msg.UTM_easting = parsed["easting"]
-            msg.UTM_northing = parsed["northing"]
-            msg.UTC = parsed["utc"]
-            msg.Zone = parsed["zone"]
-            msg.Letter = parsed["letter"]
+            msg.latitude = parsed["lat"]
+            msg.longitude = parsed["lon"]
+            msg.altitude = parsed["alt"]
+            msg.hdop = parsed["hdop"]
+            msg.utm_easting = parsed["easting"]
+            msg.utm_northing = parsed["northing"]
+            msg.utc = parsed["utc"]
+            msg.zone = parsed["zone"]
+            msg.letter = parsed["letter"]
+
+            
 
 
 
