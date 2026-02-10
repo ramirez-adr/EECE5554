@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'gps_driver'
+package_name = 'rtk_driver'
 
 setup(
     name=package_name,
@@ -10,7 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/gps_driver/launch', ['launch/launch.py']),
+        ('share/' + package_name + '/launch', ['launch/rtk_driver_launch.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -25,7 +25,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'driver = gps_driver.driver:main',
+            'rtk_driver = rtk_driver.driver:main',
         ],
     },
 )
