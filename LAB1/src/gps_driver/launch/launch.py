@@ -6,7 +6,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     port_arg = DeclareLaunchArgument(
         'port',
-        default_value='/dev/ttyUSB0',
+        default_value='/dev/ttyACM0',
         description='Serial port for GPS (e.g. /dev/ttyUSB2 or /dev/pts/6)'
     )
 
