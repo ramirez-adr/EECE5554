@@ -180,6 +180,26 @@ Analysis notebook: `gnss/analysis.ipynb`
 
 ---
 
+## Magnetometer Comparison Project
+
+**Magnetometer Calibration Algorithm Benchmarking (Course Final Project).**
+
+Benchmarks four calibration algorithms — MinMax, Magcal, Scalar EKF, and Levenberg-Marquardt — across two sensors: an industrial-grade VectorNav VN-100 and a consumer-grade iPhone 11 (via Sensor Logger). Data was collected under hard iron, soft iron, and combined distortion conditions at 7 cm and 30 cm separation distances.
+
+**Tools:** MATLAB (`masterAnalysis.m`, `functions/`) and Python (`magnetometer_analysis.ipynb`)
+
+**Calibration algorithms:**
+- `functions/runMinMax.m` — MinMax (fastest, most sensitive to distortion intensity)
+- `functions/runMagcal.m` — MATLAB Magcal (most consistent output)
+- `functions/runKalmanFilter.m` — Scalar EKF (competitive accuracy, highest std dev and slowest runtime)
+- Levenberg-Marquardt (implemented in `masterAnalysis.m`)
+
+**Data:** `Magnetometer_Comparison_Project/data/` — CSV files for VN-100 (`vn*`) and iPhone (`SLA*`) across all distortion conditions.
+
+Full report: [`EECE5554_Final_Report.pdf`](./Magnetometer_Comparison_Project/EECE5554_Final_Report.pdf)
+
+---
+
 ## Data Format
 
 All rosbag2 data uses the `.db3` format with `metadata.yaml`. Topics recorded:
