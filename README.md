@@ -19,7 +19,7 @@ Key findings:
 - MinMax was fastest but most sensitive to distortion intensity
 - Scalar EKF achieved competitive accuracy but had the highest standard deviation and slowest runtime
 
-Full report: [`EECE5554_Final_Report.pdf`](./EECE5554_Final_Report.pdf)
+Full report: [`EECE5554_Final_Report.pdf`](./Magnetometer_Comparison_Project/EECE5554_Final_Report.pdf)
 
 ---
 
@@ -31,8 +31,9 @@ Full report: [`EECE5554_Final_Report.pdf`](./EECE5554_Final_Report.pdf)
 | [LAB1](#lab1) | GPS Driver (SparkFun NEO-M9N) |
 | [gnss (LAB2)](#gnss) | RTK GNSS Driver & Accuracy Analysis |
 | [LAB3](#lab3) | IMU Driver (VectorNav VN-100) |
-| [LAB4](#lab4) | GPS + IMU Integration with EKF |
+| [LAB4](#lab4) | GPS + IMU Driver Integration |
 | [LAB5](#lab5) | Camera Calibration & Image Mosaicking |
+| [Magnetometer\_Comparison\_Project](#magnetometer-comparison-project) | Magnetometer Calibration Algorithm Benchmarking |
 
 
 ---
@@ -120,9 +121,9 @@ Analysis notebook: `LAB3/src/analysis/analysis.ipynb`
 
 ## LAB4
 
-**GPS + IMU Sensor Fusion with EKF-SLAM.**
+**GPS + IMU Driver Integration.**
 
-Brings up both drivers simultaneously via a single launch file. Includes complementary filter yaw estimation and an Extended Kalman Filter for position tracking.
+Brings up both drivers simultaneously via a single launch file. Collects synchronized GPS and IMU data for analysis, including trajectory comparison, position error, yaw from a complementary filter, and magnetometer data.
 
 ```bash
 cd LAB4
@@ -139,7 +140,7 @@ bash LAB4/src/record_bag.sh
 
 Analysis notebook: `LAB4/src/analysis/analysis.ipynb`
 
-Key outputs: trajectory comparison, position error, yaw from complementary filter vs. IMU, magnetometer calibration.
+Key outputs: trajectory comparison, position error, yaw from complementary filter vs. IMU.
 
 ---
 
